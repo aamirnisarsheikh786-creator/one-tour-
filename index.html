@@ -30,9 +30,24 @@
 
   </div>
 
-  <div class="menu">
-    <i class="fa-solid fa-bars"></i>
-  </div>
+<!-- MENU BUTTON -->
+<div class="menu" onclick="openMenu()">
+  <i class="fa-solid fa-bars"></i>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
+
+<!-- SIDE MENU -->
+<div id="sideMenu" class="side-menu">
+
+  <h3>Menu</h3>
+
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="terms.html">Terms & Conditions</a>
+
+</div>
 
 </header>
 
@@ -72,21 +87,22 @@
 
     </div>
 
-    <!-- BUTTONS -->
+<!-- BUTTONS -->
 
-    <div class="hero-buttons">
+<div class="hero-buttons">
 
-      <a href="#" class="btn whatsapp">
-        <i class="fa-brands fa-whatsapp"></i>
-        Book on WhatsApp
-      </a>
+  <a href="https://wa.me/917051932522" class="btn whatsapp" target="_blank">
 
-      <a href="#" class="btn white-btn">
-        View Packages
-      </a>
+    <i class="fa-brands fa-whatsapp"></i>
+    Book on WhatsApp
 
-    </div>
+  </a>
 
+  <a href="package.html" class="btn white-btn">
+    View Packages
+  </a>
+
+</div>
   </div>
 
 </section>
@@ -260,6 +276,92 @@
 
 </section>
 
+
+<!-- ADVERTISEMENT SLIDER -->
+
+<section class="ad-slider-section">
+
+  <div class="ad-slider" id="adSlider">
+
+<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200" class="ad-slide">
+
+<img src="https://images.unsplash.com/photo-1528127269322-539801943592?w=1200" class="ad-slide">
+
+<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200" class="ad-slide">
+
+<img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200" class="ad-slide">
+
+  </div>
+
+  <!-- DOTS -->
+
+  <div class="dots">
+
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+
+  </div>
+
+</section>
+
+<style>
+
+.ad-slider-section{
+width:100%;
+padding:15px 0;
+overflow:hidden;
+}
+
+.ad-slider{
+display:flex;
+overflow-x:auto;
+scroll-snap-type:x mandatory;
+scroll-behavior:smooth;
+gap:12px;
+padding:0 15px;
+}
+
+.ad-slider::-webkit-scrollbar{
+display:none;
+}
+
+.ad-slide{
+min-width:100%;
+height:180px;
+border-radius:22px;
+object-fit:cover;
+scroll-snap-align:start;
+box-shadow:0 4px 18px rgba(0,0,0,0.15);
+}
+
+/* DOTS */
+
+.dots{
+display:flex;
+justify-content:center;
+gap:8px;
+margin-top:12px;
+}
+
+.dot{
+width:9px;
+height:9px;
+border-radius:50%;
+background:#c7c7c7;
+transition:0.3s;
+}
+
+.dot.active{
+width:24px;
+border-radius:20px;
+background:#0a2d74;
+}
+
+</style>
+
+
 <!-- WHY CHOOSE -->
 
 <section class="why-section">
@@ -376,10 +478,10 @@
 
   </div>
 
-  <a href="#">
-    <i class="fa-brands fa-whatsapp"></i>
-    Chat on WhatsApp
-  </a>
+<a href="https://wa.me/917051932522" target="_blank">
+  <i class="fa-brands fa-whatsapp"></i>
+  Chat on WhatsApp
+</a>
 
 </section>
 
@@ -408,7 +510,7 @@
   </a>
 
 </nav>
-
+<script src="main.js"></script>
 
 </body>
 </html>
