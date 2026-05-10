@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Payment</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f4f7fb;
+padding-bottom:120px;
+}
+
+/* HEADER */
+
+.header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+background:#fff;
+padding:14px 16px;
+display:flex;
+align-items:center;
+gap:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.08);
+z-index:1000;
+}
+
+.logo{
+width:45px;
+height:45px;
+object-fit:contain;
+}
+
+.header h2{
+font-size:18px;
+color:#0a2d74;
+}
+
+/* CONTAINER */
+
+.container{
+padding:90px 15px 20px;
+}
+
+/* BOX */
+
+.box{
+background:#fff;
+padding:16px;
+border-radius:16px;
+margin-bottom:15px;
+box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+
+.box h3{
+margin-bottom:15px;
+color:#0a2d74;
+}
+
+/* INVOICE */
+
+.invoice-row{
+display:flex;
+justify-content:space-between;
+margin:8px 0;
+font-size:14px;
+color:#555;
+gap:10px;
+}
+
+.invoice-row strong{
+color:#111;
+}
+
+/* TRAVELLER */
+
+.traveller{
+padding:12px;
+border:1px solid #eee;
+border-radius:12px;
+margin-bottom:12px;
+}
+
+.traveller h4{
+margin-bottom:10px;
+color:#0a2d74;
+}
+
+.line{
+margin:4px 0;
+font-size:14px;
+}
+
+/* TOTAL */
+
+.total{
+font-size:24px;
+font-weight:700;
+color:#0a2d74;
+text-align:right;
+}
+
+/* PAYMENT */
+
+.payment-option{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px;
+border:1px solid #ddd;
+border-radius:12px;
+margin-bottom:10px;
+}
+
+.payment-option.disabled{
+opacity:0.5;
+}
+
+input[type=radio]{
+transform:scale(1.2);
+}
+
+/* BUTTON */
+
+.btn{
+position:fixed;
+bottom:18px;
+left:50%;
+transform:translateX(-50%);
+width:92%;
+height:58px;
+border:none;
+background:#0a2d74;
+color:#fff;
+font-size:16px;
+font-weight:600;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,0.15);
+}
+
+.success{
+background:#d4edda;
+color:#155724;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+display:none;
+}
+
+</style>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<img src="logoot.png" class="logo">
+
+<h2>ONE TOUR IN KASHMIR</h2>
+
+</div>
+
+<div class="container">
+
+<!-- PAYMENT METHOD -->
+
+<div class="box">
+
+<h3>Payment Method</h3>
+
+<div class="payment-option">
+<div>
+<i class="fa-brands fa-whatsapp"></i>
+Whatsapp Payment
+</div>
+
+<input type="radio" checked>
+</div>
+
+<div class="payment-option disabled">
+<div>
+<i class="fa-solid fa-mobile-screen"></i>
+PhonePe
+</div>
+
+<input type="radio" disabled>
+</div>
+
+<div class="payment-option disabled">
+<div>
+<i class="fa-solid fa-credit-card"></i>
+Card Payment
+</div>
+
+<input type="radio" disabled>
+</div>
+
+</div>
+
+<!-- INVOICE -->
+
+<div class="box">
+
+<h3>Invoice</h3>
+
+<div class="invoice-row">
+<strong>Company</strong>
+<span>ONE TOUR IN KASHMIR</span>
+</div>
+
+<div class="invoice-row">
+<strong>Address</strong>
+<span>Srinagar Kashmir</span>
+</div>
+
+<div class="invoice-row">
+<strong>Contact</strong>
+<span>+91 7051932522</span>
+</div>
+
+<div class="invoice-row">
+<strong>Email</strong>
+<span>support@onetourinkashmir.com</span>
+</div>
+
+<hr style="margin:15px 0">
+
+<div class="invoice-row">
+<strong>User Name</strong>
+<span id="userName"></span>
+</div>
+
+<div class="invoice-row">
+<strong>User Phone</strong>
+<span id="userPhone"></span>
+</div>
+
+</div>
+
+<!-- TRAVELLERS -->
+
+<div class="box">
+
+<h3>Traveller Details</h3>
+
+<div id="travellerList"></div>
+
+</div>
+
+<!-- TOTAL -->
+
+<div class="box">
+
+<h3>Total Price</h3>
+
+<div class="total">
+₹ <span id="totalPrice">0</span>
+</div>
+
+</div>
+
+<div class="success" id="successMsg">
+Booking Sent Successfully ✅
+</div>
+
+</div>
+
+<button class="btn" onclick="sendBooking()">
+Continue Booking
+</button>
+
+<script>
+
+const client = supabase.createClient(
+"https://ouknykcoqvwuedlkctgz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
+);
+
+const booking = JSON.parse(localStorage.getItem("booking"));
+
+if(!booking){
+alert("No Booking Found");
+window.location.href="package.html";
+}
+
+document.getElementById("totalPrice").innerText = booking.total;
+
+let firstTraveller = booking.travellers[0];
+
+document.getElementById("userName").innerText =
+firstTraveller?.name || "N/A";
+
+document.getElementById("userPhone").innerText =
+firstTraveller?.phone || "N/A";
+
+let html = "";
+
+booking.travellers.forEach((t,index)=>{
+
+let travellerPrice = 0;
+
+if(t.type !== "Infant"){
+travellerPrice = booking.price;
+}
+
+html += `
+
+<div class="traveller">
+
+<h4>${t.type} ${index+1}</h4>
+
+<div class="line">
+<b>Name:</b> ${t.name || "N/A"}
+</div>
+
+<div class="line">
+<b>Age:</b> ${t.age || "N/A"}
+</div>
+
+<div class="line">
+<b>Gender:</b> ${t.gender || "N/A"}
+</div>
+
+<div class="line">
+<b>Phone:</b> ${t.phone || "FREE"}
+</div>
+
+<div class="line">
+<b>Price:</b> ₹ ${travellerPrice}
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById("travellerList").innerHTML = html;
+
+async function sendBooking(){
+
+document.getElementById("successMsg").style.display="block";
+
+// SAVE TO SUPABASE
+
+await client.from("bookings").insert([{
+
+package_id: booking.package_id,
+
+title: booking.title,
+
+adult: booking.adult,
+
+child: booking.child,
+
+infant: booking.infant,
+
+travellers: booking.travellers,
+
+total: booking.total
+
+}]);
+
+// WHATSAPP MESSAGE
+
+let msg = `*NEW BOOKING*%0A%0A`;
+
+msg += `Package: ${booking.title}%0A`;
+msg += `Total: ₹${booking.total}%0A%0A`;
+
+booking.travellers.forEach((t,i)=>{
+
+msg += `Traveller ${i+1}%0A`;
+msg += `Name: ${t.name}%0A`;
+msg += `Age: ${t.age}%0A`;
+msg += `Gender: ${t.gender}%0A`;
+msg += `Phone: ${t.phone}%0A%0A`;
+
+});
+
+setTimeout(()=>{
+
+window.open(
+`https://wa.me/917051932522?text=${msg}`,
+"_blank"
+);
+
+},1500);
+
+}
+
+</script>
+
+</body>
+</html>

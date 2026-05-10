@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking</title>
+
+<link rel="stylesheet" href="booking.css">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+body{margin:0;font-family:Poppins;background:#f4f7fb}
+.header{padding:15px;background:#fff;position:fixed;width:100%;top:0;display:flex;gap:10px;align-items:center}
+.container{padding:90px 15px}
+.box{background:#fff;padding:15px;margin-bottom:15px;border-radius:12px}
+.row{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+.btnSmall{width:30px;height:30px;background:#0a2d74;color:#fff;border:none;border-radius:6px}
+input{width:100%;padding:10px;margin-top:5px;border:1px solid #ddd;border-radius:8px}
+.addBox{border:1px solid #ddd;padding:10px;margin-top:10px;border-radius:10px}
+.total{font-size:20px;color:#0a2d74;font-weight:bold}
+.btn{width:100%;padding:15px;background:#0a2d74;color:#fff;border:none;border-radius:10px}
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+<img src="logoot.png" width="40">
+<h3>Booking</h3>
+</div>
+
+<div class="container">
+
+<!-- PACKAGE -->
+<div class="box">
+<h2 id="pkgTitle">Loading...</h2>
+<p id="pkgDays"></p>
+<h3>₹ <span id="pkgPrice">0</span> / person</h3>
+</div>
+
+<!-- COUNTERS -->
+<div class="box">
+
+<h3>Travellers</h3>
+
+<!-- ADULT -->
+<div class="row">
+<span>Adult (18+)</span>
+<div>
+<button class="btnSmall" onclick="change('adult',-1)">-</button>
+<span id="adult">0</span>
+<button class="btnSmall" onclick="change('adult',1)">+</button>
+</div>
+</div>
+
+<!-- CHILD -->
+<div class="row">
+<span>Child (10–15)</span>
+<div>
+<button class="btnSmall" onclick="change('child',-1)">-</button>
+<span id="child">0</span>
+<button class="btnSmall" onclick="change('child',1)">+</button>
+</div>
+</div>
+
+<!-- INFANT FREE -->
+<!-- INFANT SECTION -->
+<div class="row">
+<span>Infant (1–2 FREE)</span>
+<div>
+<button class="btnSmall" onclick="change('infant',-1)">-</button>
+<span id="infant">0</span>
+<button class="btnSmall" onclick="change('infant',1)">+</button>
+</div>
+</div>
+
+</div>
+
+<!-- TRAVELLER DETAILS -->
+<div class="box">
+<h3>Traveller Details</h3>
+<div id="travellerList"></div>
+</div>
+
+<!-- TOTAL -->
+<div class="box">
+<h3>Total</h3>
+<div class="total">₹ <span id="total">0</span></div>
+</div>
+
+<button class="btn" onclick="confirmBooking()">Confirm Booking</button>
+
+</div>
+
+<script>
+
+const client = supabase.createClient(
+"https://ouknykcoqvwuedlkctgz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
+);
+
+const id = new URLSearchParams(location.search).get("id");
+
+let price = 0;
+
+let count = {
+adult:0,
+child:0,
+infant:0
+};
+
+let travellers = [];
+
+load();
+
+async function load(){
+
+let {data} = await client
+.from("packages")
+.select("*")
+.eq("id",id)
+.single();
+
+price = data.price;
+
+document.getElementById("pkgTitle").innerText = data.title;
+document.getElementById("pkgDays").innerText = data.days;
+document.getElementById("pkgPrice").innerText = data.price;
+
+calc();
+}
+
+function change(type,val){
+
+count[type] += val;
+if(count[type] < 0) count[type]=0;
+
+document.getElementById(type).innerText = count[type];
+
+// 🚀 ONLY ADULT + CHILD CREATE TRAVELLERS (INFANT FREE)
+buildTravellers();
+
+calc();
+}
+
+function buildTravellers(){
+
+travellers = [];
+
+// ADULT
+for(let i=0;i<count.adult;i++){
+travellers.push({
+type:"Adult",
+name:"",
+age:"",
+gender:"",
+phone:""
+});
+}
+
+// CHILD
+for(let i=0;i<count.child;i++){
+travellers.push({
+type:"Child",
+name:"",
+age:"",
+gender:"",
+phone:""
+});
+}
+
+// INFANT (FREE LOGIC)
+for(let i=0;i<count.infant;i++){
+travellers.push({
+type:"Infant",
+name:"",
+age:"1",        // AUTO FIX
+gender:"",
+phone:"disabled"
+});
+}
+
+render();
+}
+
+function render(){
+
+let html="";
+
+travellers.forEach((t,i)=>{
+
+let phoneField = "";
+let ageField = "";
+
+// INFANT PHONE DISABLED
+if(t.type === "Infant"){
+
+phoneField = `
+<input placeholder="Phone (Disabled)" disabled>
+`;
+
+ageField = `
+<input value="1" disabled>
+`;
+
+}else{
+
+phoneField = `
+<input placeholder="Phone"
+onchange="update(${i},'phone',this.value)">
+`;
+
+ageField = `
+<input placeholder="Age"
+onchange="update(${i},'age',this.value)">
+`;
+
+}
+
+html += `
+<div class="addBox">
+
+<h4>${t.type} ${i+1}</h4>
+
+<input placeholder="Name"
+onchange="update(${i},'name',this.value)">
+
+${ageField}
+
+<input placeholder="Gender"
+onchange="update(${i},'gender',this.value)">
+
+${phoneField}
+
+</div>
+`;
+
+});
+
+document.getElementById("travellerList").innerHTML = html;
+}
+
+function update(i,key,value){
+travellers[i][key]=value;
+}
+
+function calc(){
+
+// ❌ INFANT NOT COUNTED
+let paid = count.adult + count.child;
+
+let total = paid * price;
+
+document.getElementById("total").innerText = total;
+}
+
+async function confirmBooking(){
+
+let booking = {
+package_id:id,
+title:document.getElementById("pkgTitle").innerText,
+price:price,
+adult:count.adult,
+child:count.child,
+infant:count.infant,
+travellers:travellers,
+total:document.getElementById("total").innerText
+};
+
+localStorage.setItem("booking",JSON.stringify(booking));
+
+
+
+window.location.href="payment.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Account</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f4f7fb;
+padding-bottom:40px;
+}
+
+/* HEADER */
+
+.header{
+width:100%;
+background:#fff;
+padding:15px;
+display:flex;
+align-items:center;
+gap:12px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.logo{
+width:55px;
+height:55px;
+object-fit:contain;
+}
+
+.logoText h2{
+font-size:18px;
+color:#0a2d74;
+}
+
+.logoText span{
+color:#ff9800;
+}
+
+.logoText p{
+font-size:12px;
+color:#666;
+}
+
+/* TITLE */
+
+.pageTitle{
+padding:20px 18px 10px;
+}
+
+.pageTitle h1{
+font-size:28px;
+color:#0a2d74;
+}
+
+.pageTitle p{
+font-size:14px;
+color:#666;
+margin-top:4px;
+}
+
+/* PROFILE */
+
+.profileBox{
+width:92%;
+margin:auto;
+background:#fff;
+padding:25px 20px;
+border-radius:24px;
+text-align:center;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+margin-top:15px;
+}
+
+.profile{
+width:110px;
+height:110px;
+border-radius:50%;
+background:#eef2ff;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+border:4px solid #0a2d74;
+}
+
+.profile img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.profile i{
+font-size:48px;
+color:#0a2d74;
+}
+
+.userName{
+font-size:24px;
+font-weight:700;
+margin-top:18px;
+color:#0a2d74;
+}
+
+.info{
+margin-top:18px;
+text-align:left;
+}
+
+.infoRow{
+background:#f7f9fc;
+padding:14px;
+border-radius:14px;
+margin-bottom:12px;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.infoRow i{
+color:#0a2d74;
+font-size:18px;
+width:20px;
+}
+
+.infoRow span{
+font-size:14px;
+color:#444;
+}
+
+/* BUTTONS */
+
+.menu{
+width:92%;
+margin:20px auto 0;
+}
+
+.menuBtn{
+width:100%;
+height:58px;
+border:none;
+border-radius:18px;
+background:#fff;
+margin-bottom:14px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 18px;
+font-size:15px;
+font-weight:600;
+color:#222;
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
+cursor:pointer;
+}
+
+.menuBtn i{
+color:#0a2d74;
+}
+
+/* CONTACT */
+
+.contactBox{
+width:92%;
+margin:10px auto;
+background:#fff;
+padding:20px;
+border-radius:20px;
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
+}
+
+.contactBox h3{
+color:#0a2d74;
+margin-bottom:15px;
+}
+
+.contactRow{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:12px;
+font-size:14px;
+color:#444;
+}
+
+.contactRow i{
+color:#0a2d74;
+}
+
+/* LOGOUT */
+
+.logout{
+width:92%;
+height:58px;
+margin:20px auto;
+border:none;
+border-radius:18px;
+background:#e53935;
+color:#fff;
+font-size:16px;
+font-weight:600;
+display:block;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<img src="logoot.png" class="logo">
+
+<div class="logoText">
+<h2>ONE TOUR IN <span>KASHMIR</span></h2>
+<p>Explore Heaven on Earth</p>
+</div>
+
+</div>
+
+<!-- PAGE TITLE -->
+
+<div class="pageTitle">
+<h1>Account Page</h1>
+<p>Your profile & settings</p>
+</div>
+
+<!-- PROFILE -->
+
+<div class="profileBox">
+
+<div class="profile" id="profileBox">
+
+<i class="fa-solid fa-user"></i>
+
+</div>
+
+<h2 class="userName" id="userName">
+Loading...
+</h2>
+
+<div class="info">
+
+<div class="infoRow">
+<i class="fa-solid fa-phone"></i>
+<span id="userPhone">
+Loading...
+</span>
+</div>
+
+<div class="infoRow">
+<i class="fa-solid fa-envelope"></i>
+<span id="userEmail">
+Loading...
+</span>
+</div>
+
+</div>
+
+</div>
+
+<!-- MENU -->
+
+<div class="menu">
+
+<button class="menuBtn">
+<span>
+<i class="fa-solid fa-gear"></i>
+&nbsp; Settings
+</span>
+
+<i class="fa-solid fa-angle-right"></i>
+</button>
+
+<button class="menuBtn">
+<span>
+<i class="fa-solid fa-message"></i>
+&nbsp; Message
+</span>
+
+<i class="fa-solid fa-angle-right"></i>
+</button>
+
+<button class="menuBtn">
+<span>
+<i class="fa-solid fa-file-contract"></i>
+&nbsp; Terms & Conditions
+</span>
+
+<i class="fa-solid fa-angle-right"></i>
+</button>
+
+</div>
+
+<!-- CONTACT -->
+
+<div class="contactBox">
+
+<h3>Contact Information</h3>
+
+<div class="contactRow">
+<i class="fa-solid fa-envelope"></i>
+<span>teamaaoza@gmail.com</span>
+</div>
+
+<div class="contactRow">
+<i class="fa-solid fa-phone"></i>
+<span>+91 7051932522</span>
+</div>
+
+</div>
+
+<!-- LOGOUT -->
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+<script>
+
+const client = supabase.createClient(
+"https://ouknykcoqvwuedlkctgz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
+);
+
+/* LOAD USER */
+
+loadUser();
+
+async function loadUser(){
+
+const {
+data:{session}
+} = await client.auth.getSession();
+
+if(!session){
+
+window.location.href = "login.html";
+return;
+
+}
+
+const user = session.user;
+
+/* GET USER DATA */
+
+const { data, error } = await client
+.from("users")
+.select("*")
+.eq("auth_id", user.id)
+.single();
+
+if(error){
+
+console.log(error);
+return;
+
+}
+
+document.getElementById("userName")
+.innerText = data.name || "No Name";
+
+document.getElementById("userPhone")
+.innerText = data.phone || "No Phone";
+
+document.getElementById("userEmail")
+.innerText = data.email || "No Email";
+
+}
+
+/* LOGOUT */
+
+async function logout(){
+
+await client.auth.signOut();
+
+window.location.href = "login.html";
+
+}
+
+</script>
+
+</body>
+</html>

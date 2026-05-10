@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Login & Signup</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#0a2d74,#001848);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+/* BG CIRCLES */
+
+.circle{
+position:absolute;
+border-radius:50%;
+background:rgba(255,255,255,0.08);
+animation:float 8s infinite ease-in-out;
+}
+
+.circle1{
+width:220px;
+height:220px;
+top:-60px;
+left:-60px;
+}
+
+.circle2{
+width:160px;
+height:160px;
+bottom:-40px;
+right:-30px;
+animation-delay:2s;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(25px)}
+100%{transform:translateY(0)}
+}
+
+/* CARD */
+
+.container{
+width:92%;
+max-width:400px;
+background:#fff;
+border-radius:28px;
+padding:25px;
+position:relative;
+z-index:10;
+box-shadow:0 10px 40px rgba(0,0,0,0.2);
+animation:show 0.7s ease;
+}
+
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* LOGO */
+
+.logoBox{
+text-align:center;
+margin-bottom:20px;
+}
+
+.logo{
+width:75px;
+height:75px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+.logoBox h2{
+font-size:24px;
+color:#0a2d74;
+}
+
+.logoBox span{
+color:#ff9800;
+}
+
+.logoBox p{
+font-size:13px;
+color:#777;
+margin-top:5px;
+}
+
+/* TABS */
+
+.tabs{
+display:flex;
+background:#f2f4f8;
+border-radius:12px;
+padding:4px;
+margin-bottom:22px;
+}
+
+.tab{
+flex:1;
+padding:12px;
+text-align:center;
+font-weight:600;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.tab.active{
+background:#0a2d74;
+color:#fff;
+}
+
+/* FORM */
+
+.form{
+display:none;
+animation:fade 0.4s ease;
+}
+
+.form.active{
+display:block;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.inputBox{
+margin-bottom:15px;
+}
+
+.inputBox label{
+font-size:14px;
+font-weight:500;
+color:#333;
+display:block;
+margin-bottom:6px;
+}
+
+.inputBox input{
+width:100%;
+height:50px;
+border:1px solid #ddd;
+border-radius:14px;
+padding:0 14px;
+font-size:15px;
+outline:none;
+transition:0.3s;
+}
+
+.inputBox input:focus{
+border-color:#0a2d74;
+}
+
+/* BUTTON */
+
+.btn{
+width:100%;
+height:52px;
+background:#0a2d74;
+border:none;
+border-radius:14px;
+color:#fff;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.02);
+}
+
+/* MESSAGE */
+
+.msg{
+margin-top:14px;
+padding:12px;
+border-radius:10px;
+display:none;
+font-size:14px;
+}
+
+.success{
+background:#d4edda;
+color:#155724;
+}
+
+.error{
+background:#f8d7da;
+color:#721c24;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="circle circle1"></div>
+<div class="circle circle2"></div>
+
+<div class="container">
+
+<!-- LOGO -->
+
+<div class="logoBox">
+
+<img src="logoot.png" class="logo">
+
+<h2>
+ONE TOUR IN <span>KASHMIR</span>
+</h2>
+
+<p>Explore Heaven on Earth</p>
+
+</div>
+
+<!-- TABS -->
+
+<div class="tabs">
+
+<div class="tab active"
+onclick="showTab('login')"
+id="loginTab">
+Login
+</div>
+
+<div class="tab"
+onclick="showTab('signup')"
+id="signupTab">
+Signup
+</div>
+
+</div>
+
+<!-- LOGIN -->
+
+<div class="form active" id="loginForm">
+
+<div class="inputBox">
+<label>Email</label>
+<input type="email" id="loginEmail"
+placeholder="Enter email">
+</div>
+
+<div class="inputBox">
+<label>Password</label>
+<input type="password" id="loginPassword"
+placeholder="Enter password">
+</div>
+
+<button class="btn" onclick="login()">
+Login
+</button>
+
+<div class="msg" id="loginMsg"></div>
+
+</div>
+
+<!-- SIGNUP -->
+
+<div class="form" id="signupForm">
+
+<div class="inputBox">
+<label>Name</label>
+<input type="text" id="name"
+placeholder="Enter full name">
+</div>
+
+<div class="inputBox">
+<label>Phone Number</label>
+<input type="text" id="phone"
+placeholder="Enter phone number">
+</div>
+
+<div class="inputBox">
+<label>Email</label>
+<input type="email" id="email"
+placeholder="Enter email">
+</div>
+
+<div class="inputBox">
+<label>Password</label>
+<input type="password" id="password"
+placeholder="Create password">
+</div>
+
+<button class="btn" onclick="signup()">
+Create Account
+</button>
+
+<div class="msg" id="signupMsg"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const client = supabase.createClient(
+"https://ouknykcoqvwuedlkctgz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
+);
+
+/* TAB SWITCH */
+
+function showTab(type){
+
+document.getElementById("loginForm")
+.classList.remove("active");
+
+document.getElementById("signupForm")
+.classList.remove("active");
+
+document.getElementById("loginTab")
+.classList.remove("active");
+
+document.getElementById("signupTab")
+.classList.remove("active");
+
+if(type==="login"){
+
+document.getElementById("loginForm")
+.classList.add("active");
+
+document.getElementById("loginTab")
+.classList.add("active");
+
+}else{
+
+document.getElementById("signupForm")
+.classList.add("active");
+
+document.getElementById("signupTab")
+.classList.add("active");
+
+}
+
+}
+
+/* SIGNUP */
+
+async function signup(){
+
+const name =
+document.getElementById("name").value;
+
+const phone =
+document.getElementById("phone").value;
+
+const email =
+document.getElementById("email").value;
+
+const password =
+document.getElementById("password").value;
+
+if(!name || !phone || !email || !password){
+
+showMessage(
+"signupMsg",
+"Please fill all fields",
+"error"
+);
+
+return;
+}
+
+/* AUTH SIGNUP */
+
+const { data, error } =
+await client.auth.signUp({
+
+email: email,
+password: password
+
+});
+
+if(error){
+
+showMessage(
+"signupMsg",
+error.message,
+"error"
+);
+
+return;
+}
+
+/* SAVE EXTRA USER DATA */
+
+await client.from("users").insert([{
+
+auth_id: data.user.id,
+name: name,
+phone: phone,
+email: email
+
+}]);
+
+showMessage(
+"signupMsg",
+"Account Created Successfully ✅",
+"success"
+);
+
+setTimeout(()=>{
+
+window.location.href="account.html";
+
+},1500);
+
+}
+
+/* LOGIN */
+
+async function login(){
+
+const email =
+document.getElementById("loginEmail").value;
+
+const password =
+document.getElementById("loginPassword").value;
+
+const { data, error } =
+await client.auth.signInWithPassword({
+
+email: email,
+password: password
+
+});
+
+if(error){
+
+showMessage(
+"loginMsg",
+error.message,
+"error"
+);
+
+return;
+}
+
+/* SAVE LOGIN SESSION */
+localStorage.setItem("loggedIn","true");
+
+showMessage(
+"loginMsg",
+"Login Successful ✅",
+"success"
+);
+
+setTimeout(()=>{
+
+window.location.href="account.html";
+
+},1200);
+
+}
+
+/* MESSAGE */
+
+function showMessage(id,text,type){
+
+const box = document.getElementById(id);
+
+box.style.display="block";
+
+box.className = "msg " + type;
+
+box.innerText = text;
+
+}
+
+</script>
+
+</body>
+</html>

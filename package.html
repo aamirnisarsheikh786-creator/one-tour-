@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Packages</title>
+
+<link rel="stylesheet" href="package.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+
+<div class="logo-area">
+<img src="logoot.png" class="logo-img">
+
+<div class="logo-text">
+<h2>ONE TOUR IN <span>KASHMIR</span></h2>
+<p>Explore Heaven on Earth</p>
+</div>
+</div>
+
+</header>
+
+<!-- TITLE -->
+<section class="package-top">
+<h1>Packages</h1>
+</section>
+
+<!-- PACKAGE LIST -->
+<section class="package-page">
+<div id="packageList"></div>
+</section>
+
+<script>
+const SUPABASE_URL="https://ouknykcoqvwuedlkctgz.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58";
+
+const supabaseClient = supabase.createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
+
+loadPackages();
+
+async function loadPackages(){
+
+const { data, error } = await supabaseClient
+.from("packages")
+.select("*");
+
+if(error){
+console.log("Supabase Error:", error);
+return;
+}
+
+if(!data || data.length === 0){
+document.getElementById("packageList").innerHTML = "<p>No packages found</p>";
+return;
+}
+
+let html = "";
+
+data.forEach(pkg => {
+
+html += `
+<div class="package-card">
+
+<img src="${pkg.image || 'https://via.placeholder.com/400'}">
+
+<div class="package-info">
+
+<h3>${pkg.title || pkg.name || 'No Title'}</h3>
+
+<p>${pkg.days || 'N/A'}</p>
+
+<h2>₹ ${pkg.price || 0}</h2>
+
+<span>per person</span>
+
+<a href="gulmargdetail.html?id=${pkg.id}">
+View Detail
+</a>
+
+</div>
+
+</div>
+`;
+
+});
+
+document.getElementById("packageList").innerHTML = html;
+}
+</script>
+
+</body>
+</html>

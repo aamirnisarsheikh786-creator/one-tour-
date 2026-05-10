@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Your Orders</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f4f7fb;
+padding-bottom:40px;
+}
+
+/* HEADER */
+
+.header{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+background:#fff;
+padding:14px 16px;
+display:flex;
+align-items:center;
+gap:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.08);
+z-index:1000;
+}
+
+.logo{
+width:45px;
+height:45px;
+object-fit:contain;
+}
+
+.header h2{
+font-size:18px;
+color:#0a2d74;
+}
+
+/* CONTAINER */
+
+.container{
+padding:90px 15px 20px;
+}
+
+/* CARD */
+
+.card{
+background:#fff;
+border-radius:18px;
+overflow:hidden;
+margin-bottom:20px;
+box-shadow:0 3px 12px rgba(0,0,0,0.06);
+}
+
+.package-img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.content{
+padding:15px;
+}
+
+.package-title{
+font-size:24px;
+color:#0a2d74;
+margin-bottom:8px;
+}
+
+.days{
+display:inline-block;
+background:#0a2d74;
+color:#fff;
+padding:6px 12px;
+border-radius:10px;
+font-size:13px;
+margin-bottom:12px;
+}
+
+.price{
+font-size:22px;
+font-weight:700;
+color:#111;
+margin-bottom:12px;
+}
+
+/* INVOICE */
+
+.invoice{
+background:#f9fafc;
+padding:12px;
+border-radius:12px;
+margin-top:10px;
+}
+
+.invoice h3{
+margin-bottom:10px;
+color:#0a2d74;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+margin:6px 0;
+font-size:14px;
+gap:10px;
+}
+
+/* TRAVELLERS */
+
+.traveller{
+border:1px solid #eee;
+padding:12px;
+border-radius:12px;
+margin-top:12px;
+}
+
+.traveller h4{
+color:#0a2d74;
+margin-bottom:8px;
+}
+
+.line{
+margin:4px 0;
+font-size:14px;
+color:#444;
+}
+
+.total{
+font-size:24px;
+font-weight:700;
+color:#0a2d74;
+text-align:right;
+margin-top:15px;
+}
+
+.empty{
+text-align:center;
+padding:80px 20px;
+color:#777;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<img src="logoot.png" class="logo">
+
+<h2>YOUR BOOKINGS</h2>
+
+</div>
+
+<div class="container" id="orderList">
+
+<div class="empty">
+Loading Orders...
+</div>
+
+</div>
+
+<script>
+
+const client = supabase.createClient(
+"https://ouknykcoqvwuedlkctgz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
+);
+
+loadOrders();
+
+async function loadOrders(){
+
+const { data: bookings, error } = await client
+.from("bookings")
+.select("*")
+.order("id",{ascending:false});
+
+if(error){
+console.log(error);
+return;
+}
+
+if(!bookings || bookings.length === 0){
+
+document.getElementById("orderList").innerHTML = `
+<div class="empty">
+<h2>No Bookings Found</h2>
+</div>
+`;
+
+return;
+}
+
+let html = "";
+
+for(let booking of bookings){
+
+// PACKAGE DATA
+
+const { data: pkg } = await client
+.from("packages")
+.select("*")
+.eq("id", booking.package_id)
+.single();
+
+let travellerHTML = "";
+
+// TRAVELLERS
+
+booking.travellers.forEach((t,index)=>{
+
+let travellerPrice = 0;
+
+if(t.type !== "Infant"){
+travellerPrice = booking.price || pkg.price;
+}
+
+travellerHTML += `
+
+<div class="traveller">
+
+<h4>${t.type} ${index+1}</h4>
+
+<div class="line">
+<b>Name:</b> ${t.name || "N/A"}
+</div>
+
+<div class="line">
+<b>Age:</b> ${t.age || "N/A"}
+</div>
+
+<div class="line">
+<b>Gender:</b> ${t.gender || "N/A"}
+</div>
+
+<div class="line">
+<b>Phone:</b> ${t.phone || "N/A"}
+</div>
+
+<div class="line">
+<b>Price:</b> ₹ ${travellerPrice}
+</div>
+
+</div>
+
+`;
+
+});
+
+// MAIN CARD
+
+html += `
+
+<div class="card">
+
+<img src="${pkg?.image || 'https://via.placeholder.com/400'}"
+class="package-img">
+
+<div class="content">
+
+<h2 class="package-title">
+${pkg?.title || booking.title}
+</h2>
+
+<div class="days">
+${pkg?.days || 'N/A'}
+</div>
+
+<div class="price">
+₹ ${pkg?.price || booking.price} / person
+</div>
+
+<!-- INVOICE -->
+
+<div class="invoice">
+
+<h3>Invoice</h3>
+
+<div class="row">
+<span>Company</span>
+<b>ONE TOUR IN KASHMIR</b>
+</div>
+
+<div class="row">
+<span>Contact</span>
+<b>+91 7051932522</b>
+</div>
+
+<div class="row">
+<span>Email</span>
+<b>support@onetourinkashmir.com</b>
+</div>
+
+<div class="row">
+<span>Booking ID</span>
+<b>#${booking.id}</b>
+</div>
+
+<div class="row">
+<span>Adults</span>
+<b>${booking.adult}</b>
+</div>
+
+<div class="row">
+<span>Child</span>
+<b>${booking.child}</b>
+</div>
+
+<div class="row">
+<span>Infants</span>
+<b>${booking.infant}</b>
+</div>
+
+</div>
+
+<!-- TRAVELLERS -->
+
+${travellerHTML}
+
+<!-- TOTAL -->
+
+<div class="total">
+Total : ₹ ${booking.total}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+document.getElementById("orderList").innerHTML = html;
+
+}
+
+</script>
+
+</body>
+</html>
