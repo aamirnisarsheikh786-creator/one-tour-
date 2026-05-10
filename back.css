@@ -1,0 +1,47 @@
+/* PREMIUM iOS GLASS BACK BUTTON */
+
+.ios-back-btn {
+  position: fixed;
+  top: 70px; /* 👈 thoda neeche */
+  left: 16px;
+
+  width: 46px;
+  height: 46px;
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+
+  cursor: pointer;
+  z-index: 9999;
+
+  transition: all 0.25s ease;
+}
+
+/* ICON */
+.ios-back-btn i {
+  font-size: 18px;
+  color: #0a2d74;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* PRESS EFFECT */
+.ios-back-btn:active {
+  transform: scale(0.88);
+}
+
+/* HOVER EFFECT */
+.ios-back-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  background: rgba(255, 255, 255, 0.25);
+}
