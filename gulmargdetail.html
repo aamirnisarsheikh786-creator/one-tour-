@@ -245,36 +245,31 @@ async function loadData(){
 
 const id = new URLSearchParams(window.location.search).get("id");
 
+console.log("ID:", id);
+
 if(!id){
-  alert("Package ID missing!");
+  document.body.innerHTML = "<h2>Package ID missing</h2>";
   return;
 }
 
 const { data, error } = await client
   .from("packages")
   .select("*")
-  .eq("id", Number(id));
+  .eq("id", id)
+  .single();
 
-if(error){
-  console.log("Supabase error:", error);
+if(error || !data){
+  document.body.innerHTML = "<h2>Package not found</h2>";
   return;
 }
 
-if(!data || data.length === 0){
-  alert("No package found!");
-  return;
-}
+document.getElementById("title").innerText = data.title;
+document.getElementById("days").innerText = data.days;
+document.getElementById("price").innerText = data.price;
+document.getElementById("desc").innerText = data.description;
 
-const pkg = data[0]; // 🔥 important fix
+document.getElementById("bookLink").href = "booking.html?id=" + data.id;
 
-// 🔥 SAFE FIELD ACCESS
-document.getElementById("title").innerText = pkg.title || pkg.name;
-document.getElementById("days").innerText = pkg.days || pkg.day || "N/A";
-document.getElementById("price").innerText = pkg.price || pkg.amount || 0;
-
-document.getElementById("desc").innerText = pkg.description || "Best Kashmir Tour Package";
-
-document.getElementById("bookLink").href = "booking.html?id=" + pkg.id;
 }
 </script>
 <script src="back.js"></script>
