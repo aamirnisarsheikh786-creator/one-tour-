@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>About Us - One Tour In Kashmir</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="back.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* =========================
+ABOUT PAGE
+========================= */
+
+body{
+margin:0;
+padding:0;
+font-family:sans-serif;
+background:#f5f8ff;
+color:#111;
+}
+
+/* HERO */
+
+.about-hero{
+position:relative;
+height:340px;
+overflow:hidden;
+border-bottom-left-radius:35px;
+border-bottom-right-radius:35px;
+}
+
+.about-hero img{
+width:100%;
+height:100%;
+object-fit:cover;
+filter:brightness(0.7);
+}
+
+.about-overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(
+to bottom,
+rgba(0,0,0,0.25),
+rgba(0,0,0,0.55)
+);
+}
+
+.about-hero-content{
+position:absolute;
+bottom:35px;
+left:25px;
+color:#fff;
+z-index:5;
+}
+
+.about-hero-content h1{
+font-size:38px;
+margin:0;
+font-weight:800;
+}
+
+.about-hero-content p{
+margin-top:10px;
+font-size:15px;
+opacity:0.95;
+line-height:1.6;
+max-width:320px;
+}
+
+/* CONTENT */
+
+.about-container{
+padding:22px;
+}
+
+/* CARDS */
+
+.about-card{
+background:#fff;
+border-radius:26px;
+padding:22px;
+margin-bottom:20px;
+box-shadow:0 8px 30px rgba(0,0,0,0.06);
+}
+
+.about-card h2{
+font-size:22px;
+margin-top:0;
+margin-bottom:15px;
+color:#0a2d74;
+}
+
+.about-card p{
+font-size:15px;
+line-height:1.8;
+color:#555;
+}
+
+/* ICON BOX */
+
+.icon-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px;
+}
+
+.icon-box{
+background:#f7faff;
+padding:20px;
+border-radius:22px;
+text-align:center;
+border:1px solid rgba(0,123,255,0.08);
+}
+
+.icon-box i{
+font-size:28px;
+color:#0a66ff;
+margin-bottom:12px;
+}
+
+.icon-box h4{
+margin:8px 0;
+font-size:16px;
+color:#0a2d74;
+}
+
+.icon-box p{
+font-size:13px;
+line-height:1.5;
+margin:0;
+}
+
+/* CONTACT */
+
+.contact-box{
+display:flex;
+align-items:center;
+gap:15px;
+padding:18px;
+border-radius:20px;
+background:linear-gradient(135deg,#ffffff,#1976ff);
+color:#fff;
+margin-top:20px;
+}
+
+.contact-box i{
+font-size:24px;
+}
+
+/* BUTTON */
+
+.about-btn{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+width:100%;
+height:55px;
+background:#25D366;
+color:#fff;
+font-size:17px;
+font-weight:700;
+border-radius:18px;
+text-decoration:none;
+margin-top:20px;
+box-shadow:0 10px 25px rgba(37,211,102,0.25);
+}
+
+/* FOOTER */
+
+.about-footer{
+text-align:center;
+padding:30px 20px 110px;
+font-size:14px;
+color:#666;
+}
+
+.about-footer strong{
+color:#0a2d74;
+}
+
+</style>
+</head>
+<body>
+
+<!-- IOS BACK BUTTON -->
+
+<div class="ios-back-btn" onclick="history.back()">
+<i class="fa-solid fa-chevron-left"></i>
+</div>
+
+<!-- HERO -->
+
+<section class="about-hero">
+
+<img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1200">
+
+<div class="about-overlay"></div>
+
+<div class="about-hero-content">
+
+<h1>About Us</h1>
+
+<p>
+Explore the beauty of Kashmir with comfort,
+luxury and unforgettable memories.
+</p>
+
+</div>
+
+</section>
+
+<!-- CONTENT -->
+
+<div class="about-container">
+
+<!-- COMPANY -->
+
+<div class="about-card">
+
+<h2>One Tour In Kashmir</h2>
+
+<p>
+One Tour In Kashmir is a premium travel company
+dedicated to providing unforgettable experiences
+across the beautiful valleys of Kashmir.
+We offer customized tour packages, hotel bookings,
+cab services and guided trips for families,
+couples and adventure lovers.
+</p>
+
+<p>
+Our mission is to make every journey comfortable,
+safe and memorable while showcasing the true beauty
+of heaven on earth.
+</p>
+
+</div>
+
+<!-- FEATURES -->
+
+<div class="about-card">
+
+<h2>Why Choose Us?</h2>
+
+<div class="icon-grid">
+
+<div class="icon-box">
+<i class="fa-solid fa-map-location-dot"></i>
+<h4>Best Destinations</h4>
+<p>Handpicked places across Kashmir.</p>
+</div>
+
+<div class="icon-box">
+<i class="fa-solid fa-hotel"></i>
+<h4>Luxury Stays</h4>
+<p>Comfortable hotels & stays.</p>
+</div>
+
+<div class="icon-box">
+<i class="fa-solid fa-car"></i>
+<h4>Private Cabs</h4>
+<p>Safe and premium transportation.</p>
+</div>
+
+<div class="icon-box">
+<i class="fa-solid fa-headset"></i>
+<h4>24/7 Support</h4>
+<p>Travel assistance anytime.</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- CONTACT -->
+
+<div class="about-card">
+
+<h2>Contact Information</h2>
+
+<div class="contact-box">
+<i class="fa-solid fa-location-dot"></i>
+
+<div>
+<h4>Office Address</h4>
+<p>
+Jammu and Kashmir, Baramulla 193101,
+Gulmarg Road
+</p>
+</div>
+
+</div>
+
+<div class="contact-box">
+<i class="fa-solid fa-phone"></i>
+
+<div>
+<h4>Phone Number</h4>
+<p>+91 9797891853</p>
+</div>
+
+</div>
+
+<a href="https://wa.me/919797891853"
+target="_blank"
+class="about-btn">
+
+<i class="fa-brands fa-whatsapp"></i>
+Chat on WhatsApp
+
+</a>
+
+</div>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="about-footer">
+
+<strong>One Tour In Kashmir</strong><br><br>
+
+Creating unforgettable travel experiences
+across Kashmir with trust, comfort and luxury.
+
+</div>
+
+<script src="back.js"></script>
+
+</body>
+</html>
