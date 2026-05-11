@@ -108,7 +108,7 @@ container.innerHTML += `
 <span>per person</span>
 </div>
 
-<button onclick="openPackage('${pkg.link}')">
+<button onclick="openPackage('${pkg.detail_link || "gulmargdetail.html"}')">
 <i class="fa-solid fa-arrow-right"></i>
 </button>
 
@@ -128,9 +128,11 @@ container.innerHTML += `
 /* OPEN PACKAGE PAGE */
 
 function openPackage(link){
-
-window.location.href = link;
-
+  if(!link){
+    alert("Link missing");
+    return;
+  }
+  window.location.href = link;
 }
 
 
