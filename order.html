@@ -6,7 +6,6 @@
 
 <title>Your Orders</title>
 <link rel="stylesheet" href="back.css">
-
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -102,6 +101,30 @@ font-size:22px;
 font-weight:700;
 color:#111;
 margin-bottom:12px;
+}
+
+/* STATUS */
+
+.status{
+display:inline-block;
+padding:8px 14px;
+border-radius:12px;
+font-size:13px;
+font-weight:600;
+margin-bottom:14px;
+color:#fff;
+}
+
+.waiting{
+background:#f59e0b;
+}
+
+.accept{
+background:#16a34a;
+}
+
+.reject{
+background:#dc2626;
 }
 
 /* INVOICE */
@@ -220,7 +243,7 @@ let html = "";
 
 for(let booking of bookings){
 
-// PACKAGE DATA
+/* PACKAGE DATA */
 
 const { data: pkg } = await client
 .from("packages")
@@ -230,14 +253,26 @@ const { data: pkg } = await client
 
 let travellerHTML = "";
 
-// TRAVELLERS
+/* STATUS */
+
+let statusClass = "waiting";
+
+if(booking.status === "Accepted"){
+statusClass = "accept";
+}
+
+if(booking.status === "Rejected"){
+statusClass = "reject";
+}
+
+/* TRAVELLERS */
 
 booking.travellers.forEach((t,index)=>{
 
 let travellerPrice = 0;
 
 if(t.type !== "Infant"){
-travellerPrice = booking.price || pkg.price;
+travellerPrice = booking.price || pkg?.price || 0;
 }
 
 travellerHTML += `
@@ -272,7 +307,7 @@ travellerHTML += `
 
 });
 
-// MAIN CARD
+/* MAIN CARD */
 
 html += `
 
@@ -292,7 +327,13 @@ ${pkg?.days || 'N/A'}
 </div>
 
 <div class="price">
-₹ ${pkg?.price || booking.price} / person
+₹ ${pkg?.price || booking.price || 0} / person
+</div>
+
+<!-- STATUS -->
+
+<div class="status ${statusClass}">
+${booking.status || "Waiting"}
 </div>
 
 <!-- INVOICE -->
@@ -361,7 +402,6 @@ document.getElementById("orderList").innerHTML = html;
 }
 
 </script>
-  <script src="back.js"></script>
-
+<script src="back.js"></script>
 </body>
 </html>
