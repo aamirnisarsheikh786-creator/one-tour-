@@ -6,7 +6,6 @@
 
 <title>Payment</title>
 <link rel="stylesheet" href="back.css">
-
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -237,7 +236,7 @@ Card Payment
 
 <div class="invoice-row">
 <strong>Contact</strong>
-<span>+91 9797891853</span>
+<span>+91 7051932522</span>
 </div>
 
 <div class="invoice-row">
@@ -255,6 +254,11 @@ Card Payment
 <div class="invoice-row">
 <strong>User Phone</strong>
 <span id="userPhone"></span>
+</div>
+
+<div class="invoice-row">
+<strong>User Email</strong>
+<span id="userEmail"></span>
 </div>
 
 </div>
@@ -298,16 +302,61 @@ const client = supabase.createClient(
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91a255a2NvcXZ3dWVkbGtjdGd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MTAyNjcsImV4cCI6MjA5Mzk4NjI2N30.SF4VoPIiNiqwjXCKeHTBHpLIW_IehimIRUNlHZ8Gw58"
 );
 
-const booking = JSON.parse(localStorage.getItem("booking"));
+let currentUser = null;
 
-if(!booking){
-alert("No Booking Found");
-window.location.href="package.html";
+/* =========================
+   CHECK LOGIN
+========================= */
+
+checkLogin();
+
+async function checkLogin(){
+
+const { data } = await client.auth.getUser();
+
+if(!data.user){
+
+alert("Please Login First");
+
+/* redirect after login back */
+
+localStorage.setItem(
+"redirectAfterLogin",
+window.location.href
+);
+
+window.location.href = "login.html";
+
+return;
 }
 
-document.getElementById("totalPrice").innerText = booking.total;
+currentUser = data.user;
 
-let firstTraveller = booking.travellers[0];
+document.getElementById("userEmail").innerText =
+currentUser.email;
+
+}
+
+/* =========================
+   BOOKING DATA
+========================= */
+
+const booking =
+JSON.parse(localStorage.getItem("booking"));
+
+if(!booking){
+
+alert("No Booking Found");
+
+window.location.href = "package.html";
+
+}
+
+document.getElementById("totalPrice").innerText =
+booking.total;
+
+let firstTraveller =
+booking.travellers[0];
 
 document.getElementById("userName").innerText =
 firstTraveller?.name || "N/A";
@@ -357,15 +406,45 @@ html += `
 
 });
 
-document.getElementById("travellerList").innerHTML = html;
+document.getElementById("travellerList").innerHTML =
+html;
+
+/* =========================
+   SEND BOOKING
+========================= */
 
 async function sendBooking(){
 
-document.getElementById("successMsg").style.display="block";
+/* check login again */
 
-// SAVE TO SUPABASE
+const { data } = await client.auth.getUser();
 
-await client.from("bookings").insert([{
+if(!data.user){
+
+alert("Please Login First");
+
+localStorage.setItem(
+"redirectAfterLogin",
+window.location.href
+);
+
+window.location.href = "login.html";
+
+return;
+}
+
+/* SUCCESS */
+
+document.getElementById("successMsg").style.display =
+"block";
+
+/* SAVE TO SUPABASE */
+
+const { error } = await client
+.from("bookings")
+.insert([{
+
+user_email: data.user.email,
 
 package_id: booking.package_id,
 
@@ -379,16 +458,27 @@ infant: booking.infant,
 
 travellers: booking.travellers,
 
-total: booking.total
+total: booking.total,
+
+status: "Waiting"
 
 }]);
 
-// WHATSAPP MESSAGE
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+/* WHATSAPP MESSAGE */
 
 let msg = `*NEW BOOKING*%0A%0A`;
 
 msg += `Package: ${booking.title}%0A`;
-msg += `Total: ₹${booking.total}%0A%0A`;
+msg += `Total: ₹${booking.total}%0A`;
+msg += `User: ${data.user.email}%0A%0A`;
 
 booking.travellers.forEach((t,i)=>{
 
@@ -403,7 +493,7 @@ msg += `Phone: ${t.phone}%0A%0A`;
 setTimeout(()=>{
 
 window.open(
-`https://wa.me/919797891853?text=${msg}`,
+`https://wa.me/917051932522?text=${msg}`,
 "_blank"
 );
 
